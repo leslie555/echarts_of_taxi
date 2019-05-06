@@ -1,0 +1,163 @@
+<html>
+
+<head>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts-en.js"></script>
+    <style>
+        #module {
+            width: 640px;
+            height: 420px;
+            /* border: 1px solid green; */
+        }
+
+        .pie1 {
+            float: left;
+            width: 49%;
+            height: 98%;
+            /* border: 1px solid red; */
+        }
+
+        .pie2 {
+            float: left;
+            width: 49%;
+            height: 98%;
+            /* background-color: rgba(0, 200, 0, 0.3); */
+            /* border: 1px solid red; */
+        }
+    </style>
+</head>
+
+<body>
+    <div id="module">
+        <div id="pie1" class="pie1"></div>
+        <div id="pie2" class="pie2"></div>
+    </div>
+    <script src='../assets/common.js'></script>
+    <script>
+        $.ajax({
+            url: url_carType,
+            type: 'POST',
+            success: function (mydata) {
+                var myChart1 = echarts.init(document.getElementById('pie1'));
+                // var data = genData(10);
+                var option1 = {
+                    color: ['#00BAFF', '#FFD666', '#FF4D4F', '#9D4689', '#0ABA9E'],
+                    title: {
+                        text: '车辆类型比例',
+                        textStyle: {
+                            color: '#fff',
+                        },
+                        x: 'center',
+                        y: 'bottom',
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b} : {c} ({d}%)",
+                        position: ['50%', '50%']
+                    },
+                    legend: {
+                        textStyle: {
+                            color: '#fff',
+                        },
+                        orient: 'vertical',
+                        left: 'left',
+                        data: [mydata.pieLeft.data[0].name, mydata.pieLeft.data[1].name, mydata.pieLeft.data[2].name, mydata.pieLeft.data[3].name, mydata.pieLeft.data[4].name]
+                    },
+                    series: [
+                        {
+                            name: '',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            label: {
+                                show: false,
+                            },
+                            labelLine: {
+                                show: false,
+                            },
+                            data: [
+                                mydata.pieLeft.data[0],
+                                mydata.pieLeft.data[1],
+                                mydata.pieLeft.data[2],
+                                mydata.pieLeft.data[3],
+                                mydata.pieLeft.data[4],
+                            ],
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+
+
+                myChart1.setOption(option1);
+                window.onresize = myChart1.resize;
+
+
+
+                var myChart = echarts.init(document.getElementById('pie2'));
+                var option = {
+                    color: ['#00BAFF', '#FFD666', '#FF4D4F'],
+                    title: {
+                        text: '车辆燃料比例',
+                        textStyle: {
+                            color: '#fff',
+                        },
+                        x: 'center',
+                        y: 'bottom',
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{b} : {c} ({d}%)"
+                    },
+                    legend: {
+                        textStyle: {
+                            color: '#fff',
+                        },
+                        orient: 'vertical',
+                        right: 'right',
+                        data: [mydata.pieRight.data[0].name, mydata.pieRight.data[1].name, mydata.pieRight.data[2].name]
+                    },
+                    series: [
+                        {
+                            name: '燃料类型',
+                            type: 'pie',
+                            radius: '55%',
+                            center: ['50%', '60%'],
+                            data: [
+                                mydata.pieRight.data[0],
+                                mydata.pieRight.data[1],
+                                mydata.pieRight.data[2],
+                            ],
+                            label: {
+                                show: false,
+                            },
+                            labelLine: {
+                                show: false,
+                            },
+                            itemStyle: {
+                                emphasis: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+
+
+                myChart.setOption(option);
+                window.onresize = myChart.resize;
+            }
+        })
+
+    </script>
+
+</body>
+
+</html>

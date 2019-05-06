@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts-en.js"></script>
+    <style>
+        /* body {
+            box-sizing: border-box;
+            border: solid;
+        } */
+
+        #module {
+            width: 640px;
+            height: 596px;
+            /* border: 3px solid green; */
+        }
+
+        .pie {
+            width: 98%;
+            height: 45%;
+            /* border: solid white; */
+        }
+
+        .line {
+            width: 98%;
+            height: 53%;
+            /* border: 1px solid red; */
+        }
+    </style>
+</head>
+
+<body>
+    <div id='module'>
+
+        <div id="pie" class="pie"></div>
+        <div id="line" class="line"></div>
+    </div>
+    <script src='../assets/common.js'></script>
+    <script>
+        $.ajax({
+            url: url_distance,
+            type: 'POST',
+            success: function (mydata) {
+                console.log('222',mydata.pieChart.data[0].name);
+                var myChart = echarts.init(document.getElementById('pie'));
+                var option = {
+                    title: {
+                        text: '本月订单里程比',
+                        textStyle: {
+                            color: '#fff',
+                        },
+                        x: 'center'
+                    },
+                    color: ['#FF4D4F', '#3DE7C9', '#AA4CBA', '#00BAFF', '#FFD666'],
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{d}%",
+                        position: ['70%', '50%'],
+                        textStyle:{
+                            fontSize:16,
+                        },
+                    },
+                    // graphic:{
+                    //     type:'text',
+                    //    style:{
+                    //        font:'1rem'
+                    //    }
+                    // },
+                    legend: {
+                        textStyle: {
+                            color: '#fff',
+                        },
+                        orient: 'vertical',
+                        x: 'left',
+                        data: [mydata.pieChart.data[0].name, mydata.pieChart.data[1].name, mydata.pieChart.data[2].name, mydata.pieChart.data[3].name, mydata.pieChart.data[4].name]
+                    },
+                    series: [
+                        {
+                            name: '',
+                            type: 'pie',
+                            radius: ['50%', '70%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                normal: {
+                                    show: false,
+                                    position: 'center'
+                                },
+                                emphasis: {
+                                    show: true,
+                                    textStyle: {
+                                        fontSize: '20',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                            labelLine: {
+                                normal: {
+                                    show: false
+                                }
+                            },
+                            data: [
+                                 mydata.pieChart.data[0],
+                                 mydata.pieChart.data[1],
+                                 mydata.pieChart.data[2],
+                                 mydata.pieChart.data[3],
+                                 mydata.pieChart.data[4]
+                            ]
+                        }
+                    ]
+                };
+
+                myChart.setOption(option);
+                window.onresize = myChart.resize;
+
+
+                var myChart1 = echarts.init(document.getElementById('line'));
+                // app.title = '坐标轴刻度与标签对齐';
+
+                var option1 = {
+                    title: {
+                        text: '月度日均行驶里程',
+                        textStyle: {
+                            color: '#fff',
+                        },
+                        x: 'center',
+                        y: 'bottom',
+                    },
+                    grid: {
+                        left: '0%', //paddingleft
+                        right: '5%',
+                        bottom: '13%',
+                        top: '4%',
+                        containLabel: true
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'line',
+                            label: {
+                                backgroundColor: '#6a7985'
+                            }
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: mydata.chart.x.value,
+                        axisLine: {
+                            lineStyle: {
+                                color: '#fff',
+                                fontWeight: 'bolder',
+                            }
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLine: {
+                            lineStyle: {
+                                color: '#fff'
+                            }
+                        },
+                        splitLine: {
+                            show: false,
+                        },
+                    },
+                    series: [{
+                        data: mydata.chart.y[0].value,
+                        type: 'line',
+                        itemStyle: {
+                            color: '#00BAFF',
+                        },
+                        lineStyle: {
+                            color: '#00BAFF',
+                        },
+                        areaStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: '#00BAFF' // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: '#000D18' // 100% 处的颜色
+                                }],
+                                global: false // 缺省为 false
+                            }
+                        }
+                    }]
+                };
+
+
+                myChart1.setOption(option1);
+                window.onresize = myChart1.resize;
+            }});
+                
+
+    </script>
+</body>
+
+</html>

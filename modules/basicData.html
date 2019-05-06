@@ -1,0 +1,359 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+  <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts-en.js"></script>
+  <style>
+
+    body>div>div {
+      float: left;
+    }
+
+    .one,
+    .two,
+    .three,
+    .four {
+      width: 40%;
+      height: 15%;
+      background-image: url('../assets/img/card.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+
+    .one,
+    .five {
+      margin-top: 1.4%;
+      margin-left: 6%;
+
+    }
+
+    .two,
+    .six {
+      margin-top: 1.4%;
+      margin-left: 8.25%;
+    }
+
+    .three{
+      margin-top: 6%;
+      margin-left: 6%;
+    }
+    .four{
+      margin-top: 6%;
+      margin-left: 8.25%;
+    }
+    .seven {
+      margin-top: 1.2%;
+      margin-left: 7.95%;
+    }
+
+    
+    .eight {
+      margin-top: 1.2%;
+      margin-left: 6.25%;
+    }
+
+    #num {
+      font-size: 8vw;
+      font-weight: bolder;
+      text-align: center;
+      /* align:center; */
+      margin: 0 auto;
+      color: rgba(0, 192, 255, 1);
+    }
+
+    #desc {
+      font-size: 2.5vw;
+      margin: 10px auto;
+      text-align: center;
+      color: rgba(255, 255, 255, 1);
+    }
+
+    .five,
+    .six,
+    .seven,
+    .eight {
+      width: 40%;
+      height: 30%;
+      /* border: 1px solid white; */
+    }
+
+   
+  </style>
+</head>
+
+<body>
+  <div class="module">
+    <div id='one' class='one'>
+      <p id="num"></p>
+      <p id='desc'></p>
+    </div>
+    <div id="two" class="two">
+      <p id="num"></p>
+      <p id='desc'></p>
+    </div>
+    <div id="three" class="three">
+      <p id='desc'></p>
+      <p id="num"></p>
+    </div>
+    <div id="four" class="four">
+      <p id='desc'></p>
+      <p id="num"></p>
+    </div>
+
+    <div id="five" class="five"></div>
+    <div id="six" class="six"></div>
+    <div id="seven" class="seven"></div>
+    <div id="eight" class="eight"></div>
+   
+  </div>
+  <script src='../assets/common.js'></script>
+
+  <script>
+    $.ajax({
+      url: url_basic,
+      type: 'POST',
+      data: '',
+      // dataType: "jsonp",
+      // jsonp: "callback",
+      success: function (data) {
+        console.log(data);
+        $("#one #num").text(data.singlevalue[1].value);
+        $("#one #desc").text(data.singlevalue[1].desc);
+        $("#two #num").text(data.singlevalue[0].value);
+        $("#two #desc").text(data.singlevalue[0].desc);
+        $("#three #num").text(data.singlevalue[2].value);
+        $("#three #desc").text(data.singlevalue[2].desc);
+        // $("#three #desc").text('昨日平均营运次数');
+        $("#four #num").text(data.singlevalue[3].value);
+        $("#four #desc").text(data.singlevalue[3].desc);
+        var myChart1 = echarts.init(document.getElementById('five'));
+        var option1 = {
+          // 标题组件，包含主标题和副标题
+          title: {
+                text: '当前在线率',
+                textStyle: {
+                    color: '#fff',
+                },
+                x: 'center',
+                y: 'bottom',
+            },
+            color:[ '#A099CD','rgba(0,57,84,0.4)',],
+
+          series: [
+            {
+              name: '',
+              type: 'pie',
+              // 饼图的半径，数组的第一项是内半径，第二项是外半径
+              radius: ['50%', '70%'],
+              // 是否启用防止标签重叠策略，默认开启
+              avoidLabelOverlap: false,
+              hoverAnimation: true, //放大效果
+              data: [
+                {   // 数据值
+                  value: data.singlevalue[4].value,
+                  // 数据项名称
+                  name: '当前在线率',
+                  //该数据项是否被选中
+                  selected: false,
+                  // 单个扇区的标签配置
+                  label: {
+                      // 是显示标签
+                      show: true,
+                      color:'#fff',
+                      position: 'center',
+                      fontSize: 20,
+                      // 标签内容格式器，支持字符串模板和回调函数两种形式，字符串模板与回调函数返回的字符串均支持用 \n 换行
+                      formatter: '{d}%',
+                  },
+
+                },
+                {
+                  value: 100-data.singlevalue[4].value,
+                  label: {
+                    normal: {
+                      show: false,
+
+                    }
+                  }
+                },
+              ]
+            }
+          ]
+        };
+
+        myChart1.setOption(option1, window.onresize = myChart1.resize);
+
+
+        var myChart2 = echarts.init(document.getElementById('six'));
+        var option2 = {
+          // 标题组件，包含主标题和副标题
+          title: {
+                text: '当前重车率',
+                textStyle: {
+                    color: '#fff',
+                },
+                x: 'center',
+                y: 'bottom',
+            },
+            color:[ '#EB6E86','rgba(0,57,84,0.4)',],
+
+          series: [
+            {
+              // 系列名称，用于tooltip的显示，legend 的图例筛选，在 setOption 更新数据和配置项时用于指定对应的系列。
+              name: '任务进度',
+              type: 'pie',
+              // 饼图的半径，数组的第一项是内半径，第二项是外半径
+              radius: ['50%', '70%'],
+              // 是否启用防止标签重叠策略，默认开启
+              avoidLabelOverlap: false,
+              hoverAnimation: true,
+              data: [
+                {   // 数据值
+                  value: data.singlevalue[5].value,
+                  // 数据项名称
+                  name: '',
+                  //该数据项是否被选中
+                  selected: false,
+                  // 单个扇区的标签配置
+                  label: {
+                      show: true,
+                      color:'#fff',
+                      position: 'center',
+                      fontSize: 20,
+                      // 标签内容格式器，支持字符串模板和回调函数两种形式，字符串模板与回调函数返回的字符串均支持用 \n 换行
+                      formatter: '{d}%',
+                  },
+                },
+
+                {
+                  value: 100-data.singlevalue[5].value,
+                  label: {
+                      show: false,
+                  }
+
+                },
+
+              ]
+            }
+          ]
+        };
+        myChart2.setOption(option2);
+        window.onresize = myChart2.resize;
+
+        var myChart3 = echarts.init(document.getElementById('seven'));
+        var option3 = {
+          // 标题组件，包含主标题和副标题
+          title: {
+                text: '日均实载里程占比',
+                textStyle: {
+                    color: '#fff',
+                },
+                x: 'center',
+                y: 'bottom',
+            },
+            color:[ '#73DB84','rgba(0,57,84,0.4)',],
+
+          series: [
+            {
+              // 系列名称，用于tooltip的显示，legend 的图例筛选，在 setOption 更新数据和配置项时用于指定对应的系列。
+              name: '任务进度',
+              type: 'pie',
+              // 饼图的半径，数组的第一项是内半径，第二项是外半径
+              radius: ['50%', '70%'],
+              // 是否启用防止标签重叠策略，默认开启
+              avoidLabelOverlap: false,
+              hoverAnimation: true,
+              data: [
+                {   // 数据值
+                  value: data.singlevalue[6].value,
+                  // 数据项名称
+                  name: '',
+                  //该数据项是否被选中
+                  selected: false,
+                  // 单个扇区的标签配置
+                  label: {
+                      // 是显示标签
+                      show: true,
+                      color:'#fff',
+                      position: 'center',
+                      fontSize: 20,
+                      // 标签内容格式器，支持字符串模板和回调函数两种形式，字符串模板与回调函数返回的字符串均支持用 \n 换行
+                      formatter: '{d}%',
+                  },
+                },
+
+                {
+                  value: 100-data.singlevalue[6].value,
+                  label: {
+                      show: false,
+                  }
+                },
+
+              ]
+            }
+          ]
+        };
+        myChart3.setOption(option3);
+        window.onresize = myChart3.resize;
+
+        var myChart4 = echarts.init(document.getElementById('eight'));
+        var option4 = {
+          // 标题组件，包含主标题和副标题
+          title: {
+                text: '日均实载时间占比',
+                textStyle: {
+                    color: '#fff',
+                },
+                x: 'center',
+                y: 'bottom',
+            },
+            color:[ '#FDD580','rgba(0,57,84,0.4)',],
+
+          series: [
+            {
+              // 系列名称，用于tooltip的显示，legend 的图例筛选，在 setOption 更新数据和配置项时用于指定对应的系列。
+              name: '任务进度',
+              type: 'pie',
+              // 饼图的半径，数组的第一项是内半径，第二项是外半径
+              radius: ['50%', '70%'],
+              // 是否启用防止标签重叠策略，默认开启
+              avoidLabelOverlap: false,
+              hoverAnimation: true,
+              data: [
+                {   // 数据值
+                  value: data.singlevalue[7].value,
+                  // 数据项名称
+                  name: '日均实载时间占比',
+                  //该数据项是否被选中
+                  selected: false,
+                  // 单个扇区的标签配置
+                  label: {
+                      show: true,
+                      color:'#fff',
+                      position: 'center',
+                      fontSize: 20,
+                      // 标签内容格式器，支持字符串模板和回调函数两种形式，字符串模板与回调函数返回的字符串均支持用 \n 换行
+                      formatter: '{d}%',
+                  },
+                },
+                {
+                  value: 100-data.singlevalue[7].value,
+                  label: {
+                      show: false,
+                  }
+                },
+              ]
+            }
+          ]
+        };
+        myChart4.setOption(option4);
+        window.onresize = myChart4.resize;
+
+        
+      }
+    })
+  </script>
+</body>
+
+</html>

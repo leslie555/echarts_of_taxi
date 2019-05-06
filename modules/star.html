@@ -1,0 +1,194 @@
+<html>
+
+<head>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts-en.js"></script>
+    <!-- <link href="../assets/css/common.css" rel="stylesheet"> -->
+    <style>
+        .nine,
+        .ten {
+            width: 98%;
+            height: 48%;
+        }
+        .ten{
+            margin-top:4%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="module">
+        <div id="nine" class="nine"></div>
+        <div id="ten" class="ten"></div>
+    </div>
+    <script src='../assets/common.js'></script>
+    <script>
+
+        $.ajax({
+            url: url_basic,
+            type: 'POST',
+            data: '',
+            // dataType: "jsonp",
+            // jsonp: "callback",
+            success: function (data) {
+                var myChart5 = echarts.init(document.getElementById('nine'));
+                var option5 = {
+                    title: {
+                        text: '单车月度日均营收金额',
+                        textStyle: {
+                            color: '#fff',
+                        },
+                        x: 'center',
+                        y: 'bottom',
+                    },
+                    color: ['#FFD666'], //柱子颜色
+                    tooltip: {
+                        trigger: 'axis',
+                        formatter: "{b}<br />{c} ",
+                        axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                        }
+                    },
+                    grid: {
+                        left: '3%', //paddingleft
+                        right: '0%',
+                        bottom: '13%',
+                        top: '5%',
+                        containLabel: true
+                    },
+                    xAxis: [
+                        {
+                            type: 'category',
+                            data: data.charts[0].x.value,
+                            axisTick: {
+                                alignWithLabel: true
+                            },
+                            nameTextStyle: {
+                                fontSize: 10
+                            },
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#fff'
+                                }
+                            }
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            axisLine: {
+                                lineStyle: {
+                                    color: '#fff'
+                                }
+                            },
+                            splitLine: {
+                                show: false,
+                            },
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '收入',
+                            type: 'bar',
+                            barWidth: '40%',
+                            data: data.charts[0].y[0].value
+                        }
+                    ]
+                };
+
+                myChart5.setOption(option5);
+                window.onresize = myChart5.resize;
+
+
+                var myChart6 = echarts.init(document.getElementById('ten'));
+                var option6 = {
+                    title: {
+                        text: '驾驶员月度日均工作时长',
+                        textStyle: {
+                            color: '#fff',
+                        },
+                        x: 'center',
+                        y: 'bottom',
+                    },
+                    grid: {
+                        left: '5%', //paddingleft
+                        right: '2%',
+                        bottom: '13%',
+                        top: '4%',
+                        containLabel: true
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'line',
+                            label: {
+                                backgroundColor: '#6a7985'
+                            }
+                        }
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: data.charts[1].x.value,
+                        axisLine: {
+                            lineStyle: {
+                                color: '#fff'
+                            }
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLine: {
+                            lineStyle: {
+                                color: '#fff'
+                            }
+                        },
+                        splitLine: {
+                            show: false,
+                        },
+                    },
+                    series: [{
+                        data: data.charts[1].y[0].value,
+                        type: 'line',
+                        itemStyle: {
+                            color: '#00BAFF',
+                        },
+                        lineStyle: {
+                            color: '#00BAFF',
+                        },
+                        areaStyle: {
+                            color: {
+                                type: 'linear',
+                                x: 0,
+                                y: 0,
+                                x2: 0,
+                                y2: 1,
+                                colorStops: [{
+                                    offset: 0, color: '#00BAFF' // 0% 处的颜色
+                                }, {
+                                    offset: 1, color: '#000D18' // 100% 处的颜色
+                                }],
+                                global: false // 缺省为 false
+                            }
+                        }
+                    }]
+                };
+
+                myChart6.setOption(option6);
+                window.onresize = myChart6.resize;
+            }
+        })
+
+
+        var map=new BMap.Map('container');
+        map.setCenterAndZoom(new BMap.points(103,30),11);
+        map.addEventListener('click',showInfo);
+        function showInfo(e){
+            alert(e.point.lng);
+            map.removeEventListener('click',showinfo)
+        }
+    </script>
+</body>
+
+</html>
+

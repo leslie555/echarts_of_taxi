@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+
+<head>
+  <meta charset="utf-8">
+</head>
+
+<body style="height: 100%; margin: 0">
+  <div id="container" style="height: 100%"></div>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/echarts.min.js"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-gl/echarts-gl.min.js"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts-stat/ecStat.min.js"></script>
+  <script type="text/javascript"
+    src="http://echarts.baidu.com/gallery/vendors/echarts/extension/dataTool.min.js"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/china.js"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/map/js/world.js"></script>
+  <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=F1NNNPTamwQgdee650uvKRpvZv2kaKF7"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/echarts/extension/bmap.min.js"></script>
+  <script type="text/javascript" src="http://echarts.baidu.com/gallery/vendors/simplex.js"></script>
+  <script src='../assets/js/jquery-1.10.2.min.js'></script>
+  <script src='../assets/common.js'></script>
+  <script type="text/javascript">
+
+
+    function gun() {
+      for (var i = 0; i < $('li').length; i++) {
+        if (i == 8) {
+          $('li')[i].id = 1;
+        } else {
+          $('li')[i].id++;
+        }
+      }
+      for (var i = 0; i < $('li').length; i++) {
+        if ($('li')[i].id > 6 || $('li')[i].id < 2) {
+          $('li')[i].style.display = 'none';
+        }
+      }
+      console.log('333')
+    }
+    setInterval(gun, 2000);
+    var dom = document.getElementById("container");
+    var myChart = echarts.init(dom);
+    var app = {};
+    option = null;
+    app.title = '热力图与百度地图扩展';
+
+    $.get('../assets/data/taxi.json', function (data) {
+      var points = [].concat.apply([], data.map(function (track) {
+        return track.map(function (seg) {
+          return seg.coord.concat([1]);
+        });
+      }));
+      // var centerPoint=new Map.Map
+      myChart.setOption(option = {
+        animation: false,
+        bmap: {
+          center: [104.06, 30.67],
+          zoom: 13,
+          roam: true,
+          mapStyle: {
+            'styleJson': [
+              {
+                'featureType': 'water',
+                'elementType': 'all',
+                'stylers': {
+                  'color': '#031628'
+                }
+              },
+              {
+                'featureType': 'land',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#000102'
+                }
+              },
+              {
+                'featureType': 'highway',
+                'elementType': 'all',
+                'stylers': {
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'arterial',
+                'elementType': 'geometry.fill',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'arterial',
+                'elementType': 'geometry.stroke',
+                'stylers': {
+                  'color': '#0b3d51'
+                }
+              },
+              {
+                'featureType': 'local',
+                'elementType': 'geometry',
+                'stylers': {
+                  'color': '#000000'
+                }
+              },
+              {
+                'featureType': 'railway',
+                'elementType': 'geometry.fill',
+                'stylers': {
+                  // 'color': '#000000'
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'railway',
+                'elementType': 'geometry.stroke',
+                'stylers': {
+                  // 'color': '#08304b'
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'subway',
+                'elementType': 'geometry',
+                'stylers': {
+                  // 'lightness': -70
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'subway',    //调整地铁颜色
+                'elementType': 'geometry.stroke',
+                'stylers': {
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'subway',
+                'elementType': 'labels',
+                'stylers': {
+                  'visibility': 'off'
+                }
+              },
+
+              {
+                'featureType': 'building',
+                'elementType': 'geometry.fill',
+                'stylers': {
+                  // 'color': '#000000'
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'all',
+                'elementType': 'labels.text.fill',
+                'stylers': {
+                  // 'color': '#857f7f'
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'all',
+                'elementType': 'labels.text.stroke',
+                'stylers': {
+                  // 'color': '#000000'
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'building',//建筑物颜色
+                'elementType': 'geometry',
+                'stylers': {
+                  // 'color': '#022338'
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'building',   //调整建筑物标签是否可视
+                'elementType': 'labels',
+                'stylers': {
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'green',
+                'elementType': 'geometry',
+                'stylers': {
+                  // 'color': '#062032'
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'boundary',
+                'elementType': 'all',
+                'stylers': {
+                  'color': '#465b6c'
+                }
+              },
+              {
+                'featureType': 'manmade',
+                'elementType': 'all',
+                'stylers': {
+                  // 'color': '#022338'
+                  'visibility': 'off'
+                }
+              },
+              {
+                'featureType': 'label',
+                'elementType': 'all',
+                'stylers': {
+                  'visibility': 'off'
+                }
+              }
+            ]
+          }
+        },
+        visualMap: {
+          show: false,
+          top: 'top',
+          min: 0,
+          max: 5,
+          seriesIndex: 0,
+          calculable: true,
+          inRange: {
+            color: ['blue', 'green', 'yellow', 'orange', 'red']
+          }
+        },
+        series: [{
+          type: 'heatmap',
+          coordinateSystem: 'bmap',
+          data: points,
+          pointSize: 5,
+          blurSize: 6
+        }]
+      });
+      if (!app.inNode) {
+        // 添加百度地图插件
+        var bmap = myChart.getModel().getComponent('bmap').getBMap();
+        // bmap.addControl(new BMap.MapTypeControl());
+      }
+    });
+    ;
+    if (option && typeof option === "object") {
+      myChart.setOption(option, true);
+    }
+  </script>
+</body>
+
+</html>
